@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification System</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            text-align: center;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 90%;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .error {
+            color: #dc3545;
+            display: none;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Processing your request...</h1>
+        <div class="spinner"></div>
+        <p>Please wait while we verify your session.</p>
+        <p class="error" id="errorMessage">An error occurred. Please try again.</p>
+    </div>
+
+    <script>
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+
+        window.handleAnuraResponse = async function() {
+            if (window.Anura) {
+                try {
+                    const response = await fetch('/verify' + window.location.search, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            responseId: window.Anura.getAnura().getId()
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Verification failed');
+                    }
+
+                    const data = await response.json();
+                    window.location.href = data.url;
+                } catch (error) {
+                    console.error('Error:', error);
+                    document.getElementById('errorMessage').style.display = 'block';
+                    document.querySelector('.spinner').style.display = 'none';
+                }
+            }
+        };
+
+        (function() {
+            const anura = document.createElement('script');
+            if (typeof anura === 'object') {
+                const request = {
+                    instance: 'YOUR_INSTANCE_ID',
+                    source: urlParams.get('source') || '',
+                    campaign: urlParams.get('campaign') || '',
+                    callback: 'handleAnuraResponse'
+                };
+
+                const params = [Math.floor(1E12 * Math.random() + 1)];
+                for (const key in request) {
+                    if (request[key]) {
+                        params.push(`${key}=${encodeURIComponent(request[key])}`);
+                    }
+                }
+
+                anura.type = 'text/javascript';
+                anura.async = true;
+                anura.src = 'https://script.anura.io/request.js?' + params.join('&');
+                
+                const firstScript = document.getElementsByTagName('script')[0];
+                firstScript.parentNode.insertBefore(anura, firstScript);
+            }
+        })();
+    </script>
+</body>
+</html>
