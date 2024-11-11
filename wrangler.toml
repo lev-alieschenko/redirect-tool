@@ -1,0 +1,8 @@
+name = "redirect-tool"
+main = "src/worker.js"
+compatibility_date = "2024-01-01"
+
+[vars]
+ANURA_INSTANCE_ID = "2685694301"
+DEFAULT_REDIRECT_URL = "https://www.google.com"
+DEFAULT_DENIED_URL = "https://www.yahoo.com"
