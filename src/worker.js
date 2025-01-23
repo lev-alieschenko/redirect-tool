@@ -26,6 +26,17 @@ export default {
       });
     }
 
+    // Health check endpoint
+    if (url.pathname === '/health') {
+      return new Response(JSON.stringify({ status: 'healthy' }), {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          ...corsHeaders,
+        },
+      });
+    }
+
     if (url.pathname === '/go') {
       const redirectBase = url.searchParams.get('redirectUrl');
       const deniedBase = url.searchParams.get('deniedUrl');
