@@ -166,6 +166,17 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // Health check endpoint
+  if (url.pathname === '/health') {
+    return new Response(JSON.stringify({ status: 'healthy' }), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        ...corsHeaders,
+      },
+    });
+  }
+
   if (parsedUrl.pathname === '/go') {
     const { redirectUrl, deniedUrl, security } = parsedUrl.query;
 
