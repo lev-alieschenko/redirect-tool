@@ -129,7 +129,7 @@ export default {
             }
             break;
           case 'none':
-            finalUrl = redirectUrl || config.defaults.redirectUrl;
+            finalUrl = deniedUrl || config.defaults.redirectUrl;
             break;
         }
 
