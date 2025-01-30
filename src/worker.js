@@ -124,12 +124,12 @@ export default {
             }
             break;
           case 'medium':
-            if (data.result !== 'bad') {
+            if (data.result === 'warning' || data.result === 'good') {
               finalUrl = redirectUrl || config.defaults.redirectUrl;
             }
             break;
           case 'none':
-            finalUrl = deniedUrl || config.defaults.redirectUrl;
+            finalUrl = redirectUrl || config.defaults.redirectUrl;
             break;
         }
 
